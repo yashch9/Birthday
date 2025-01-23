@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="birthday-page">
+    <div class="banner">
+        <audio id="background-music" src="assets/chipi_chipi.mp3" preload="auto"></audio>
+
+        <!-- Banner content -->
+    </div>
+
+    <div class="bulb-container">
+        <!-- Bulbs will be added by JS -->
+    </div>
+    <!-- <div id="debug"></div> -->
+
+    <!-- Load libraries first -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+
+                const music = document.getElementById('background-music');
+            music.play().catch(error => {
+                console.log('Autoplay was prevented:', error);
+            });
+
+            // Stop music after 30 seconds
+            setTimeout(() => {
+                music.pause();
+                music.currentTime = 0;
+            }, 30000);
+
+                // Create and center the banner image
+                const bannerImg = document.createElement('img');
+                bannerImg.src = 'assets/banner.png'; // Path to your banner image
+                bannerImg.alt = 'Happy Birthday Banner';
+                bannerImg.style.cssText = `
+                    position: fixed;
+                    top: 20%;
+                    left: 35%;
+                    transform: translate(-50%, -50%);
+                    max-width: 90%;
+                    height: auto;
+                    animation: bounce 1s infinite;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(bannerImg);
+
+                // Confetti settings
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                function randomInRange(min, max) {
+                    return Math.random() * (max - min) + min;
+                }
+
+                // Initial confetti burst
+                confetti({
+                    ...defaults,
+                    particleCount: 1000,
+                    origin: { x: 0.5, y: 0.5 }
+                });
+
+                const duration = 30 * 1000;
+                const animationEnd = Date.now() + duration;
+
+                const interval = setInterval(function() {
+                    const timeLeft = animationEnd - Date.now();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    
+                    const particleCount = 100 * (timeLeft / duration);
+                    confetti({ 
+                        ...defaults, 
+                        particleCount, 
+                        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } 
+                    });
+                    confetti({ 
+                        ...defaults, 
+                        particleCount, 
+                        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } 
+                    });
+                }, 250);
+
+                // Function to create floating balloons
+                function createBalloons() {
+                    const balloonColors = ['#FF69B4', '#87CEEB', '#98FB98', '#DDA0DD', '#F0E68C'];
+                    for(let i = 0; i < 30; i++) {
+                        const balloon = document.createElement('div');
+                        balloon.className = 'balloon';
+                        balloon.style.cssText = `
+                            background: ${balloonColors[i % balloonColors.length]};
+                            left: ${Math.random() * 90}%;
+                            bottom: -100px;
+                            animation-delay: ${Math.random() * 1}s;
+                            animation-duration: ${Math.random() * 3 + 4}s;
+                        `;
+                        document.body.appendChild(balloon);
+
+                        // Remove balloon after animation to prevent DOM overload
+                        balloon.addEventListener('animationend', () => {
+                            balloon.remove();
+                        });
+                    }
+                }
+
+                // Initial balloon creation
+                createBalloons();
+
+                // Recreate floating balloons every 7 seconds
+                setInterval(createBalloons, 7000);
+
+                // Function to create alphabet balloons
+        function createAlphabetBalloons() {
+            const alphabets = ['S', 'R', 'I', 'N', 'I', 'T', 'H'];
+            const colors = ['#FF5733', '#FF5733', '#FF5733', '#FF5733', '#FF5733', '#FF5733', '#FF5733'];
+            const numBalloons = alphabets.length;
+            const spacing = 40 / (numBalloons + 1); // to distribute evenly
+            const offset = 30; 
+
+            alphabets.forEach((letter, index) => {
+                const alphaBalloon = document.createElement('div');
+                alphaBalloon.className = 'alphabet-balloon';
+                alphaBalloon.textContent = letter;
+                alphaBalloon.style.background = colors[20 + index % colors.length];
+                alphaBalloon.style.left = `${offset + spacing * (index + 1)}%`;
+                alphaBalloon.style.bottom = `-100px`; // Starting position
+                alphaBalloon.style.animationDelay = `${Math.random() * 1}s`;
+                alphaBalloon.style.animationDuration = `5s`; // Fixed duration to reach target
+                document.body.appendChild(alphaBalloon);
+            });
+        }
+
+
+            // Function to create the big heart with text "21"
+function createBigHeart() {
+    const bigHeart = document.createElement('div');
+    bigHeart.className = 'big-heart';
+    bigHeart.textContent = '21';
+
+    // Position the big heart at the center (you can adjust this with left/right if needed)
+    bigHeart.style.left = '50%';  // Center it horizontally
+    bigHeart.style.transform = 'translateX(-50%)';  // Ensure it is perfectly centered
+
+    // Append the big heart to the DOM
+    document.body.appendChild(bigHeart);
+}
+
+// Call the function to create balloons
+createAlphabetBalloons();
+// Call the function to create the big heart
+createBigHeart();
+
+                // Function to create static balloons (Assuming it's defined elsewhere)
+                function createStaticBalloons() {
+                    // Your static balloons creation logic
+                    // Ensure this function is defined to prevent errors
+                }
+
+                // Create alphabet balloons once
+                createAlphabetBalloons();
+
+                // Create static balloons once
+                createStaticBalloons();
+
+            }, 1000); // 1 second delay before starting animations
+        });
+    </script>
+</body>
+</html>
